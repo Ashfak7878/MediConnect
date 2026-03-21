@@ -1,0 +1,11 @@
+{
+  "_id": "69ba4a89f15ff80205892a6b",
+  "name": "ansar naseem",
+  "email": "ansar12@gmail.com",
+  "password": "$2b$10$lE6aJgey.bmpRHTtdbyNXuvLken89jY1C6oLOmIDsnDp5R32wwj0m",
+  "isAdmin": true,
+  "isDoctor": false,
+  "notification": [],
+  "seennotification": [],
+  "__v": 0
+}

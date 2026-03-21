@@ -1,0 +1,71 @@
+/* About.css */
+.about-hero {
+  background: linear-gradient(135deg, #1890ff 0%, #0050b3 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 20px rgba(0, 80, 179, 0.2);
+}
+
+.about-hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.about-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px 30px;
+  text-align: center;
+  height: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 45px;
+  color: #1890ff;
+  margin-bottom: 25px;
+}
+
+.feature-card h4 {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.feature-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.mission-section {
+  background-color: #f0f2f5;
+  padding: 60px 40px;
+  border-radius: 12px;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.mission-section h2 {
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 20px;
+}
