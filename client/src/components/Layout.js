@@ -70,16 +70,21 @@ const Layout = ({ children }) => {
             {SidebarMenu.map((menu, index) => {
               const isActive = location.pathname === menu.path;
               return (
-                <div key={index} className={`menu-item ${isActive && "active"}`}>
+                <div 
+                  key={index} 
+                  className={`menu-item ${isActive && "active"}`}
+                  onClick={() => navigate(menu.path)}
+                  style={{ cursor: "pointer" }}
+                >
                   <i className={menu.icon}></i>
                   <Link to={menu.path}>{menu.name}</Link>
                 </div>
               );
             })}
             {/* Logout Button */}
-            <div className="menu-item" onClick={handleLogout}>
+            <div className="menu-item" onClick={handleLogout} style={{ cursor: "pointer" }}>
               <i className="fa-solid fa-right-from-bracket"></i>
-              <Link to="/login">Logout</Link>
+              <Link to="/login" onClick={(e) => e.preventDefault()}>Logout</Link>
             </div>
           </div>
         </div>

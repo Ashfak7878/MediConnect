@@ -7,7 +7,15 @@ body {
 .main {
   display: flex;
   height: 100vh;
-  background: linear-gradient(135deg, #f0f4fd 0%, #ffffff 100%);
+  background: linear-gradient(-45deg, #f0f4fd, #e0eafc, #eef2f3, #ffffff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .layout {

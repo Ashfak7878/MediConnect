@@ -139,11 +139,40 @@ const blockUserController = async (req, res) => {
   }
 };
 
-// Export all 5 functions together!
+// ==========================================
+// 6. UPDATE DOCTOR PROFILE (Admin Edit)
+// ==========================================
+const updateDoctorProfileController = async (req, res) => {
+  try {
+    const { doctorId, ...updateData } = req.body;
+    
+    const updatedDoctor = await doctorModel.findByIdAndUpdate(
+      doctorId,
+      { $set: updateData },
+      { new: true }
+    );
+    
+    res.status(200).send({
+      success: true,
+      message: "Doctor Profile Updated Successfully",
+      data: updatedDoctor,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error updating doctor profile",
+      error,
+    });
+  }
+};
+
+// Export all 6 functions together!
 module.exports = {
   getAllDoctorsController,
   getAllUsersController,
   changeAccountStatusController,
   toggleAbsentStatusController,
-  blockUserController 
+  blockUserController,
+  updateDoctorProfileController
 };

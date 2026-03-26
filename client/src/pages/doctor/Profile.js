@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Col, Form, Input, Row, TimePicker, message, Switch } from 'antd';
+import { Col, Form, Input, Row, TimePicker, message, Switch, Select } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../../redux/features/alertSlice';
 import moment from 'moment';
@@ -103,32 +103,32 @@ const Profile = () => {
             <Row gutter={20}>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="First Name" name="firstName" rules={[{ required: true }]}>
-                  <Input placeholder="John" className="py-2" />
+                  <Input placeholder="John" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="Last Name" name="lastName" rules={[{ required: true }]}>
-                  <Input placeholder="Doe" className="py-2" />
+                  <Input placeholder="Doe" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="Phone Number" name="phone" rules={[{ required: true }]}>
-                  <Input placeholder="(555) 123-4567" className="py-2" />
+                  <Input placeholder="(555) 123-4567" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="Email Address" name="email" rules={[{ required: true }]}>
-                  <Input type="email" placeholder="doctor@example.com" className="py-2" />
+                  <Input type="email" placeholder="doctor@example.com" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="Website (Optional)" name="website">
-                  <Input placeholder="www.drjohn.com" className="py-2" />
+                  <Input placeholder="www.drjohn.com" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="Clinic Address" name="address" rules={[{ required: true }]}>
-                  <Input placeholder="123 Medical Plaza, City" className="py-2" />
+                  <Input placeholder="123 Medical Plaza, City" className="py-2" disabled />
                 </Form.Item>
               </Col>
             </Row>
@@ -138,18 +138,32 @@ const Profile = () => {
             </h5>
             <Row gutter={20}>
               <Col xs={24} md={12} lg={8}>
-                <Form.Item label="Specialization" name="specialization" rules={[{ required: true }]}>
-                  <Input placeholder="e.g., Cardiology, Pediatrics" className="py-2" />
+                <Form.Item label="Specialization" name="specialization" rules={[{ required: true, message: "Please select your specialization" }]}>
+                  <Select placeholder="Select Specialization" size="large" className="w-100 py-1" showSearch disabled>
+                    <Select.Option value="Cardiology">Cardiology</Select.Option>
+                    <Select.Option value="Dentist">Dentist</Select.Option>
+                    <Select.Option value="Dermatology">Dermatology</Select.Option>
+                    <Select.Option value="ENT">ENT (Ear, Nose, Throat)</Select.Option>
+                    <Select.Option value="General Physician">General Physician</Select.Option>
+                    <Select.Option value="Gynecology">Gynecology</Select.Option>
+                    <Select.Option value="Neurology">Neurology</Select.Option>
+                    <Select.Option value="Oncology">Oncology</Select.Option>
+                    <Select.Option value="Ophthalmology">Ophthalmology</Select.Option>
+                    <Select.Option value="Orthopedics">Orthopedics</Select.Option>
+                    <Select.Option value="Pediatrics">Pediatrics</Select.Option>
+                    <Select.Option value="Psychiatry">Psychiatry</Select.Option>
+                    <Select.Option value="Urology">Urology</Select.Option>
+                  </Select>
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
                 <Form.Item label="Years of Experience" name="experience" rules={[{ required: true }]}>
-                  <Input type="number" placeholder="e.g., 5" className="py-2" />
+                  <Input type="number" placeholder="e.g., 5" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>
-                <Form.Item label="Consultation Fee (₹)" name="feesPerCunsaltation" rules={[{ required: true }]}>
-                  <Input type="number" placeholder="e.g., 500" className="py-2" />
+                <Form.Item label="Consultation Fee (₹)" name="feesPerConsultation" rules={[{ required: true }]}>
+                  <Input type="number" placeholder="e.g., 500" className="py-2" disabled />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12} lg={8}>

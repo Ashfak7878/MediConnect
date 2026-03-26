@@ -5,7 +5,8 @@ const {
   getAllDoctorsController,
   changeAccountStatusController,
   toggleAbsentStatusController,
-  blockUserController // <--- THE MISSING IMPORT IS HERE!
+  blockUserController,
+  updateDoctorProfileController
 } = require("../controllers/adminCtrl");
 
 const router = express.Router();
@@ -28,5 +29,8 @@ router.post("/toggleAbsentStatus", authMiddleware, toggleAbsentStatusController)
 
 // POST || BLOCK USER
 router.post("/blockUser", authMiddleware, blockUserController);
+
+// POST || UPDATE DOCTOR PROFILE
+router.post("/updateDoctorProfile", authMiddleware, updateDoctorProfileController);
 
 module.exports = router;

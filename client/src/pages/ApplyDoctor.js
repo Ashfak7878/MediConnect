@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
-import { Col, Form, Input, Row, TimePicker, message, Upload, Button } from "antd";
+import { Col, Form, Input, Row, TimePicker, message, Upload, Button, Select } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
@@ -31,7 +31,7 @@ const ApplyDoctor = () => {
       formData.append("address", values.address);
       formData.append("specialization", values.specialization);
       formData.append("experience", values.experience);
-      formData.append("feesPerCunsaltation", values.feesPerConsultation);
+      formData.append("feesPerConsultation", values.feesPerConsultation);
       formData.append("userId", user._id);
       
       // Send timings as a stringified array
@@ -121,8 +121,22 @@ const ApplyDoctor = () => {
           </h5>
           <Row gutter={20}>
             <Col xs={24} md={12} lg={8}>
-              <Form.Item label="Specialization" name="specialization" rules={[{ required: true }]}>
-                <Input placeholder="e.g., Cardiology, Pediatrics" className="py-2" />
+              <Form.Item label="Specialization" name="specialization" rules={[{ required: true, message: "Please select your specialization" }]}>
+                <Select placeholder="Select Specialization" size="large" className="w-100 py-1" showSearch>
+                  <Select.Option value="Cardiology">Cardiology</Select.Option>
+                  <Select.Option value="Dentist">Dentist</Select.Option>
+                  <Select.Option value="Dermatology">Dermatology</Select.Option>
+                  <Select.Option value="ENT">ENT (Ear, Nose, Throat)</Select.Option>
+                  <Select.Option value="General Physician">General Physician</Select.Option>
+                  <Select.Option value="Gynecology">Gynecology</Select.Option>
+                  <Select.Option value="Neurology">Neurology</Select.Option>
+                  <Select.Option value="Oncology">Oncology</Select.Option>
+                  <Select.Option value="Ophthalmology">Ophthalmology</Select.Option>
+                  <Select.Option value="Orthopedics">Orthopedics</Select.Option>
+                  <Select.Option value="Pediatrics">Pediatrics</Select.Option>
+                  <Select.Option value="Psychiatry">Psychiatry</Select.Option>
+                  <Select.Option value="Urology">Urology</Select.Option>
+                </Select>
               </Form.Item>
             </Col>
             <Col xs={24} md={12} lg={8}>
