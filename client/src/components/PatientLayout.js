@@ -12,10 +12,7 @@ const PatientLayout = ({ children }) => {
     localStorage.clear();
     message.success("Logged out successfully");
     navigate("/login");
-  };
-
-  // Branding Logic
-  const isApplyPage = location.pathname === "/apply-doctor";
+  };  const isApplyPage = location.pathname === "/apply-doctor";
   const brandName = isApplyPage ? "MediConnect" : "DocApp";
 
   const menuItems = [
@@ -31,7 +28,7 @@ const PatientLayout = ({ children }) => {
 
   return (
     <div className="layout-wrapper">
-      {/* TOP NAVIGATION BAR */}
+      {}
       <nav className="navbar">
         <Link to="/" className="nav-brand">
           <span style={{ color: "#1890ff" }}>+</span>{brandName}
@@ -63,7 +60,7 @@ const PatientLayout = ({ children }) => {
         </div>
       </nav>
 
-      {/* PAGE CONTENT */}
+      {}
       <main className="page-container">
         {children}
       </main>

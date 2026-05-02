@@ -5,18 +5,12 @@ const bcrypt = require('bcryptjs');
 mongoose.connect(process.env.MONGO_URL).then(async () => {
   try {
     const db = mongoose.connection.db;
-
-    // Generate Salt for Hashing
     const salt = await bcrypt.genSalt(10);
 
     console.log('--- STARTING ACCOUNT CREATION ---');
-
-    // 1. Create ADMIN Account
     const adminEmail = 'admin@mediconnect.com';
     const adminPassword = 'admin123';
     const hashedAdminPassword = await bcrypt.hash(adminPassword, salt);
-
-    // Delete existing admin if any
     await db.collection('users').deleteOne({ email: adminEmail });
 
     const adminResult = await db.collection('users').insertOne({
@@ -29,13 +23,9 @@ mongoose.connect(process.env.MONGO_URL).then(async () => {
       seennotification: []
     });
     console.log(`✅ Admin created with email: ${adminEmail} | password: ${adminPassword}`);
-
-    // 2. Create DOCTOR Account
     const doctorEmail = 'doctor@mediconnect.com';
     const doctorPassword = 'doctor123';
     const hashedDoctorPassword = await bcrypt.hash(doctorPassword, salt);
-
-    // Delete existing doctor if any
     await db.collection('users').deleteOne({ email: doctorEmail });
     await db.collection('doctors').deleteOne({ email: doctorEmail });
 
@@ -50,8 +40,6 @@ mongoose.connect(process.env.MONGO_URL).then(async () => {
     });
 
     const doctorUserId = userResult.insertedId;
-
-    // 3. Create the corresponding Doctor Profile
     await db.collection('doctors').insertOne({
       userId: doctorUserId.toString(), // Mongoose schemas often use String for userId referencing
       firstName: 'Sarah',

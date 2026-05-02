@@ -12,10 +12,7 @@ export default function ProtectedRoute({ children }) {
 
   const getUser = useCallback(async () => {
     try {
-      const token = localStorage.getItem("token");
-      
-      // Safety check: Don't call backend if there's no token
-      if (!token) return;
+      const token = localStorage.getItem("token");      if (!token) return;
 
       dispatch(showLoading());
       const res = await axios.post(
@@ -31,9 +28,7 @@ export default function ProtectedRoute({ children }) {
       
       if (res.data.success) {
         dispatch(setUser(res.data.data));
-      } else {
-        // If backend says token is invalid
-        localStorage.clear();
+      } else {        localStorage.clear();
         navigate("/login"); 
       }
     } catch (error) {
@@ -48,10 +43,7 @@ export default function ProtectedRoute({ children }) {
     if (!user && localStorage.getItem("token")) {
       getUser();
     }
-  }, [user, getUser]);
-
-  // Final check for rendering
-  if (localStorage.getItem("token")) {
+  }, [user, getUser]);  if (localStorage.getItem("token")) {
     return children;
   } else {
     return <Navigate to="/login" />;

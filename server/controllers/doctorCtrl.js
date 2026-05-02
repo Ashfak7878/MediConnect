@@ -1,11 +1,6 @@
 const appointmentModel = require('../models/appointmentModel');
 const doctorModel = require('../models/doctorModel');
-const userModel = require('../models/userModel');
-
-// ==========================================
-// 1. GET DOCTOR INFO (PROFILE)
-// ==========================================
-const getDoctorInfoController = async (req, res) => {
+const userModel = require('../models/userModel');const getDoctorInfoController = async (req, res) => {
   try {
     const doctor = await doctorModel.findOne({ userId: req.body.userId });
     res.status(200).send({
@@ -21,12 +16,7 @@ const getDoctorInfoController = async (req, res) => {
       message: 'Error fetching doctor info',
     });
   }
-};
-
-// ==========================================
-// 2. UPDATE DOCTOR PROFILE
-// ==========================================
-const updateProfileController = async (req, res) => {
+};const updateProfileController = async (req, res) => {
   try {
     const doctor = await doctorModel.findOneAndUpdate(
       { userId: req.body.userId },
@@ -38,9 +28,7 @@ const updateProfileController = async (req, res) => {
       message: 'Doctor profile updated successfully',
       data: doctor,
     });
-  } catch (error) {
-    // Handling the "already exists" (Duplicate Key) error just in case
-    if (error.code === 11000) {
+  } catch (error) {    if (error.code === 11000) {
       return res.status(400).send({
         success: false,
         message: 'A doctor with this email or phone number already exists.',
@@ -53,12 +41,7 @@ const updateProfileController = async (req, res) => {
       message: 'Error updating doctor profile',
     });
   }
-};
-
-// ==========================================
-// 3. GET DOCTOR APPOINTMENTS
-// ==========================================
-const doctorAppointmentsController = async (req, res) => {
+};const doctorAppointmentsController = async (req, res) => {
   try {
     const doctor = await doctorModel.findOne({ userId: req.body.userId });
     
@@ -68,10 +51,7 @@ const doctorAppointmentsController = async (req, res) => {
         message: 'No doctor profile found for this user',
         data: [],
       });
-    }
-
-    // CRITICAL FIX: The doctorId is saved as a String in the Appointments collection!
-    const appointments = await appointmentModel.find({ doctorId: doctor._id.toString() });
+    }    const appointments = await appointmentModel.find({ doctorId: doctor._id.toString() });
     
     res.status(200).send({
       success: true,
@@ -86,17 +66,9 @@ const doctorAppointmentsController = async (req, res) => {
       message: 'Error in fetching Doctor Appointments',
     });
   }
-};
-
-// ==========================================
-// 4. UPDATE APPOINTMENT STATUS
-// ==========================================
-const updateStatusController = async (req, res) => {
+};const updateStatusController = async (req, res) => {
   try {
-    const { appointmentsId, status } = req.body;
-    
-    // Added { new: true } to get the updated document back
-    const appointments = await appointmentModel.findByIdAndUpdate(
+    const { appointmentsId, status } = req.body;    const appointments = await appointmentModel.findByIdAndUpdate(
       appointmentsId, 
       { status },
       { new: true } 
@@ -128,12 +100,7 @@ const updateStatusController = async (req, res) => {
       message: 'Error In Update Status',
     });
   }
-};
-
-// ==========================================
-// 5. GET DOCTOR BY ID (THE MISSING PIECE!)
-// ==========================================
-const getDoctorByIdController = async (req, res) => {
+};const getDoctorByIdController = async (req, res) => {
   try {
     const doctor = await doctorModel.findOne({ _id: req.body.doctorId });
     res.status(200).send({
@@ -149,10 +116,7 @@ const getDoctorByIdController = async (req, res) => {
       message: "Error fetching single doctor info",
     });
   }
-};
-
-// Export all controllers
-module.exports = { 
+};module.exports = { 
   getDoctorInfoController, 
   updateProfileController, 
   doctorAppointmentsController, 

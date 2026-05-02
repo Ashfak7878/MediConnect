@@ -54,10 +54,17 @@ const Home = () => {
 
   return (
     <Layout>
-      {/* PREMIUM HERO SECTION */}
-      <div className="hero-section text-center text-white py-5 rounded-4 mb-5 shadow-sm" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)', marginTop: '-10px' }}>
-        <h1 className="display-4 fw-bold mb-3 text-white">Find your specialist and book instantly.</h1>
-        <p className="fs-5 opacity-75 mb-4">Top-rated doctors. Transparent pricing. Verified reviews.</p>
+      {}
+      <div className="hero-section text-center text-white rounded-4 mb-5 shadow-sm" style={{ 
+        background: 'linear-gradient(135deg, rgba(30,58,138,0.7) 0%, rgba(59,130,246,0.85) 100%), url("/dashboard_banner.png")', 
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        marginTop: '-10px',
+        padding: '80px 20px'
+      }}>
+        <h1 className="display-4 fw-bold mb-3 text-white" style={{ textShadow: '0 4px 10px rgba(0,0,0,0.3)' }}>Find your specialist and book instantly.</h1>
+        <p className="fs-5 opacity-100 mb-4" style={{ textShadow: '0 2px 5px rgba(0,0,0,0.3)' }}>Top-rated doctors. Transparent pricing. Verified reviews.</p>
         
         <div className="d-flex justify-content-center px-4">
           <Input 
@@ -70,7 +77,7 @@ const Home = () => {
           />
         </div>
 
-        {/* Categories / Pills */}
+        {}
         <div className="d-flex justify-content-center flex-wrap gap-2 mt-4 px-2">
           {categories.map((cat, index) => (
             <Button 

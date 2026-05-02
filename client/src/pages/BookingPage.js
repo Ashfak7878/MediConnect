@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import Layout from "../components/Layout";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
-import { message, DatePicker, TimePicker, Row, Col, Alert, Tag, Spin } from "antd";
+import { message, DatePicker, TimePicker, Row, Col, Alert, Tag, Spin, Modal, Form, Input } from "antd";
 
 const BookingPage = () => {
   const params = useParams(); 
@@ -17,6 +17,7 @@ const BookingPage = () => {
   const [time, setTime] = useState("");
   const [doctorInfo, setDoctorInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
 
   const getDoctorData = async () => {
     try {
@@ -37,15 +38,19 @@ const BookingPage = () => {
 
   useEffect(() => {
     getDoctorData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleBooking = async () => {
+  const handleBookingClick = () => {
     if (!date || !time) {
       return message.warning("Please select both a Date and a Time!");
     }
+    setIsPaymentModalVisible(true);
+  };
 
+  const handlePaymentSubmit = async (values) => {
     try {
+      setIsPaymentModalVisible(false);
       dispatch(showLoading());
       const res = await axios.post(
         "/api/v1/user/book-appointment",
@@ -56,13 +61,15 @@ const BookingPage = () => {
           userInfo: user, 
           date: date, 
           time: time,
+          paymentStatus: "paid",
+          paymentMethod: "card",
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
       dispatch(hideLoading());
       if (res.data.success) {
-        message.success("Appointment Booked Successfully!");
+        message.success("Payment Received & Appointment Booked Successfully!");
         navigate("/appointments"); 
       } else {
         message.error(res.data.message);
@@ -92,7 +99,7 @@ const BookingPage = () => {
         ) : (
           <Row gutter={[40, 40]} align="top" className="px-md-4">
             
-            {/* LEFT COLUMN: Premium Doctor Card */}
+            {}
             <Col xs={24} md={10} lg={8}>
               <div className="glass-card text-center p-4 border-0 shadow-lg rounded-4" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
                 <div className="bg-primary bg-opacity-10 rounded-circle d-flex justify-content-center align-items-center mx-auto mb-4" style={{ width: "120px", height: "120px", border: '4px solid white', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
@@ -115,7 +122,7 @@ const BookingPage = () => {
                     <div className="bg-light rounded p-2 me-3"><i className="fa-solid fa-indian-rupee-sign text-success fs-5"></i></div>
                     <div>
                       <span className="d-block text-muted small fw-bold text-uppercase">Consultation Fee</span>
-                      <span className="fw-bold fs-6">₹{doctorInfo.feesPerCunsultation || doctorInfo.feesPerCunsaltation}</span>
+                      <span className="fw-bold fs-6">₹{doctorInfo.feesPerConsultation}</span>
                     </div>
                   </div>
 
@@ -130,7 +137,7 @@ const BookingPage = () => {
               </div>
             </Col>
 
-            {/* RIGHT COLUMN: Booking Form */}
+            {}
             <Col xs={24} md={14} lg={16}>
               <div className="bg-white p-5 rounded-4 shadow-sm border" style={{ height: '100%' }}>
                 {doctorInfo.isAbsent ? (
@@ -169,11 +176,11 @@ const BookingPage = () => {
                     <div className="mt-4 pt-3 border-top">
                       <button 
                         className="btn-primary-custom w-100 py-3 fs-5 rounded-pill shadow"
-                        onClick={handleBooking}
+                        onClick={handleBookingClick}
                       >
-                        Confirm Booking
+                        Proceed to Payment (₹{doctorInfo.feesPerConsultation})
                       </button>
-                      <p className="text-center text-muted small mt-3"><i className="fa-solid fa-shield-halved me-1 text-success"></i> Secure Booking Process. Payment collected at clinic.</p>
+                      <p className="text-center text-muted small mt-3"><i className="fa-solid fa-shield-halved me-1 text-success"></i> Secure Booking Process. Payment required to confirm.</p>
                     </div>
                   </>
                 )}
@@ -181,6 +188,42 @@ const BookingPage = () => {
             </Col>
           </Row>
         )}
+
+        <Modal
+          title={<div className="text-center fs-4 fw-bold"><i className="fa-solid fa-credit-card text-primary me-2"></i>Secure Payment</div>}
+          open={isPaymentModalVisible}
+          onCancel={() => setIsPaymentModalVisible(false)}
+          footer={null}
+          centered
+        >
+          <div className="text-center mb-4">
+            <h5 className="text-muted">Amount to Pay</h5>
+            <h2 className="text-success fw-bold">₹{doctorInfo?.feesPerConsultation}</h2>
+          </div>
+          <Form layout="vertical" onFinish={handlePaymentSubmit}>
+            <Form.Item label="Card Holder Name" name="cardName" rules={[{ required: true, message: 'Please enter card holder name' }]}>
+              <Input placeholder="John Doe" size="large" prefix={<i className="fa-solid fa-user text-muted mx-2"></i>} />
+            </Form.Item>
+            <Form.Item label="Card Number" name="cardNumber" rules={[{ required: true, min: 16, max: 16, message: 'Please enter a valid 16-digit card number' }]}>
+              <Input placeholder="1234 5678 9101 1121" size="large" maxLength={16} prefix={<i className="fa-regular fa-credit-card text-muted mx-2"></i>} />
+            </Form.Item>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Expiry Date" name="expiry" rules={[{ required: true, message: 'MM/YY' }]}>
+                  <Input placeholder="MM/YY" size="large" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="CVV" name="cvv" rules={[{ required: true, min: 3, max: 3, message: '3 digits' }]}>
+                  <Input.Password placeholder="123" size="large" maxLength={3} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <button type="submit" className="btn btn-success w-100 py-3 rounded-pill mt-3 fs-5 fw-bold shadow-sm">
+              Pay ₹{doctorInfo?.feesPerConsultation} & Confirm
+            </button>
+          </Form>
+        </Modal>
       </div>
     </Layout>
   );

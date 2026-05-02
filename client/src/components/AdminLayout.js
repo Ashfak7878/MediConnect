@@ -12,10 +12,7 @@ const AdminLayout = ({ children }) => {
     localStorage.clear();
     message.success("Logged out successfully");
     navigate("/login");
-  };
-
-  // The true Admin Menu (Separated perfectly)
-  const adminMenu = [
+  };  const adminMenu = [
     { name: "Dashboard Overview", path: "/", icon: "fa-solid fa-chart-pie" },
     { name: "Manage Doctors", path: "/admin/doctors", icon: "fa-solid fa-user-doctor" },
     { name: "Manage Patients", path: "/admin/users", icon: "fa-solid fa-bed-pulse" },
@@ -24,7 +21,7 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="d-flex" style={{ minHeight: "100vh", backgroundColor: "#f4f7fa" }}>
       
-      {/* 1. PROFESSIONAL DARK SIDEBAR */}
+      {}
       <div className="bg-dark text-white d-flex flex-column shadow-lg" style={{ width: "260px", zIndex: 10 }}>
         <div className="p-4 text-center border-bottom border-secondary">
           <h4 className="text-info fw-bold m-0">
@@ -64,10 +61,10 @@ const AdminLayout = ({ children }) => {
         </div>
       </div>
 
-      {/* 2. MAIN CONTENT AREA */}
+      {}
       <div className="flex-grow-1 d-flex flex-column overflow-hidden">
         
-        {/* TOP HEADER */}
+        {}
         <div className="bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center z-index-1">
           <h5 className="m-0 fw-bold text-secondary">MediConnect Workspace</h5>
           
@@ -91,7 +88,7 @@ const AdminLayout = ({ children }) => {
           </div>
         </div>
 
-        {/* 3. DYNAMIC PAGE CONTENT */}
+        {}
         <div className="p-4 flex-grow-1 overflow-auto">
           {children}
         </div>

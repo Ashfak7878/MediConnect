@@ -4,10 +4,7 @@ import axios from "axios";
 import { Table, Tag, message, Popconfirm, Button } from "antd";
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-
-  // Fetch all users from the database
-  const getUsers = async () => {
+  const [users, setUsers] = useState([]);  const getUsers = async () => {
     try {
       const res = await axios.get("/api/v1/admin/getAllUsers", {
         headers: {
@@ -25,10 +22,7 @@ const Users = () => {
 
   useEffect(() => {
     getUsers();
-  }, []);
-
-  // Securely Block a User
-  const handleBlockUser = async (record) => {
+  }, []);  const handleBlockUser = async (record) => {
     try {
       const res = await axios.post(
         "/api/v1/admin/blockUser",
@@ -47,10 +41,7 @@ const Users = () => {
       console.log(error);
       message.error("Failed to block user");
     }
-  };
-
-  // Professional Ant Design Table Columns
-  const columns = [
+  };  const columns = [
     {
       title: "Full Name",
       dataIndex: "name",
@@ -89,7 +80,7 @@ const Users = () => {
       dataIndex: "actions",
       render: (text, record) => (
         <div className="d-flex gap-2">
-          {/* Hides the block button for Admins so you don't block yourself! */}
+          {}
           {!record.isAdmin && (
             <Popconfirm
               title="Restrict this user?"
@@ -113,25 +104,30 @@ const Users = () => {
     <Layout>
       <div className="glass-card mx-auto bg-white p-4 rounded shadow-sm" style={{ maxWidth: "1100px" }}>
         
-        {/* PREMIUM HEADER */}
-        <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-          <div>
-            <h2 className="fw-bold text-dark m-0">
-              <i className="fa-solid fa-users me-2 text-primary"></i>
-              Manage Patients
-            </h2>
-            <p className="text-muted m-0 mt-1">
-              Securely monitor and manage all registered patient accounts.
-            </p>
-          </div>
-          <div className="text-end">
-            <Tag color="blue" className="fs-6 py-1 px-3 rounded-pill border-0">
-              Total Users: <b>{users.length}</b>
-            </Tag>
+        {}
+        <div className="rounded-4 mb-4 shadow-sm text-white p-4" style={{
+          background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.7) 0%, rgba(59, 130, 246, 0.8) 100%), url("/dashboard_banner.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h2 className="fw-bold text-white m-0" style={{ textShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
+                <i className="fa-solid fa-users me-2"></i> Manage Patients
+              </h2>
+              <p className="opacity-100 m-0 mt-1 fs-6" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+                Securely monitor and manage all registered patient accounts.
+              </p>
+            </div>
+            <div className="text-end">
+              <Tag color="blue" className="fs-5 py-2 px-4 rounded-pill border-0 shadow-sm" style={{ color: '#000', background: 'rgba(255,255,255,0.95)' }}>
+                Total Users: <b className="text-primary">{users.length}</b>
+              </Tag>
+            </div>
           </div>
         </div>
 
-        {/* ELEGANT TABLE */}
+        {}
         <Table 
           columns={columns} 
           dataSource={users} 

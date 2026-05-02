@@ -1,42 +1,36 @@
 const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema(
-  {
-    // The ID of the Patient making the booking
-    userId: {
+  {    userId: {
       type: String,
       required: true,
-    },
-    // The ID of the Doctor being booked
-    doctorId: {
+    },    doctorId: {
       type: String,
       required: true,
-    },
-    // A snapshot of the Doctor's details (Name, Fees, Phone)
-    doctorInfo: {
+    },    doctorInfo: {
       type: Object,
       required: true,
-    },
-    // A snapshot of the Patient's details (Name, Phone)
-    userInfo: {
+    },    userInfo: {
       type: Object,
       required: true,
-    },
-    // The specific day of the appointment
-    date: {
+    },    date: {
       type: String,
       required: true,
-    },
-    // The specific time block the patient chose
-    time: {
+    },    time: {
       type: String,
       required: true,
-    },
-    // 'pending' (waiting for doctor approval), 'approved', or 'rejected'
-    status: {
+    },    status: {
       type: String,
       required: true,
       default: "pending",
+    },
+    paymentStatus: {
+      type: String,
+      default: "pending",
+    },
+    paymentMethod: {
+      type: String,
+      default: "none",
     },
   },
   { timestamps: true }

@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 
 const doctorSchema = new mongoose.Schema(
-  {
-    // Links this doctor profile to their specific User account
-    userId: {
+  {    userId: {
       type: String,
     },
     firstName: {
@@ -28,9 +26,7 @@ const doctorSchema = new mongoose.Schema(
     address: {
       type: String,
       required: [true, "address is required"],
-    },
-    // Used for the Patient's Dropdown Menu
-    specialization: {
+    },    specialization: {
       type: String,
       required: [true, "specialization is required"],
     },
@@ -45,14 +41,10 @@ const doctorSchema = new mongoose.Schema(
     timings: {
       type: Object,
       required: [true, "work timing is required"],
-    },
-    // NEW FEATURE: Admin can switch this to true to hide the doctor from patients
-    isAbsent: {
+    },    isAbsent: {
       type: Boolean,
       default: false, 
-    },
-    // 'pending' (waiting for admin), 'approved' (live on site), or 'rejected'
-    status: {
+    },    status: {
       type: String,
       default: "pending",
     },

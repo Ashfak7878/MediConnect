@@ -5,10 +5,7 @@ import { Badge, message } from "antd";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.user);
-  const navigate = useNavigate();
-
-  // Logout Function
-  const handleLogout = () => {
+  const navigate = useNavigate();  const handleLogout = () => {
     localStorage.clear();
     message.success("Logout Successfully");
     navigate("/login");
@@ -41,14 +38,14 @@ const Navbar = () => {
               </Link>
             </li>
 
-            {/* NEW: About Link Added Here */}
+            {}
             <li className="nav-item">
               <Link className="nav-link" to="/about">
                 About
               </Link>
             </li>
 
-            {/* Notification Icon with Badge */}
+            {}
             <li className="nav-item mx-2">
               <Badge
                 count={user && user.notification ? user.notification.length : 0}
@@ -65,7 +62,7 @@ const Navbar = () => {
               </Badge>
             </li>
 
-            {/* User Name & Logout */}
+            {}
             {user ? (
               <>
                 <li className="nav-item">

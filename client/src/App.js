@@ -2,14 +2,15 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import BookingPage from './pages/BookingPage';
 import Users from './pages/admin/Users';
 import Doctors from './pages/admin/Doctors';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import NotificationPage from './pages/NotificationPage';
-import ApplyDoctor from "./pages/ApplyDoctor";
 import About from "./pages/About";
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import Profile from './pages/doctor/Profile';
@@ -20,7 +21,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* PUBLIC ROUTES (Login/Register) */}
+        {}
         <Route
           path="/login"
           element={
@@ -38,8 +39,16 @@ function App() {
             </PublicRoute>
           }
         />
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicRoute>
+              <ForgotPassword />
+            </PublicRoute>
+          }
+        />
 
-        {/* PROTECTED ROUTES (Dashboard/Home) */}
+        {}
         <Route
           path="/"
           element={
@@ -61,14 +70,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/apply-doctor"
-          element={
-            <ProtectedRoute>
-              <ApplyDoctor />
             </ProtectedRoute>
           }
         />
@@ -107,7 +108,15 @@ function App() {
           }
         />
 
-        {/* ADMIN ROUTES */}
+        {}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/users"
           element={

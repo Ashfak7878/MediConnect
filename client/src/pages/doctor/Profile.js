@@ -13,8 +13,6 @@ const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-
-  // update doc profile
   const handleFinish = async (values) => {
     try {
       dispatch(showLoading());
@@ -47,8 +45,6 @@ const Profile = () => {
       message.error('Something Went Wrong');
     }
   };
-
-  // get Doc Details
   const getDoctorInfo = async () => {
     try {
       const res = await axios.post(
@@ -70,17 +66,22 @@ const Profile = () => {
 
   useEffect(() => {
     getDoctorInfo();
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Layout>
       <div className="glass-card mt-3">
-        <div className="text-center mb-5">
-          <h2 className="fw-bold text-dark">
-            Manage <span style={{ color: "#1890ff" }}>Profile</span>
+        {}
+        <div className="rounded-4 mb-5 shadow-sm text-white p-4 text-center mt-2" style={{
+          background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.7) 0%, rgba(59, 130, 246, 0.8) 100%), url("/dashboard_banner.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+          <h2 className="fw-bold text-white m-0" style={{ textShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
+            <i className="fa-solid fa-user-doctor me-2"></i> Manage Professional Profile
           </h2>
-          <p className="text-muted">
+          <p className="opacity-100 m-0 mt-2 fs-6" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
             Update your professional information and working hours.
           </p>
         </div>

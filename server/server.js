@@ -3,14 +3,28 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
+const path = require("path");
 
-dotenv.config();
+// Load environment variables
+dotenv.config({ path: path.join(__dirname, ".env") });
 const app = express();
 
-app.use(cors());
+// Configure CORS to explicitly allow your frontend URLs
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "https://medi-connect-inky-nine.vercel.app"
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Database connection
 const connectDB = async () => {
   try {
     if (!process.env.MONGO_URL) {
@@ -25,10 +39,10 @@ const connectDB = async () => {
 };
 connectDB();
 
-// ROUTES (Fixed duplicate)
+// Routes
 app.use("/api/v1/user", require("./routes/userRoutes"));
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
-app.use("/api/v1/doctor", require("./routes/doctorRoutes")); // <
+app.use("/api/v1/doctor", require("./routes/doctorRoutes"));
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {

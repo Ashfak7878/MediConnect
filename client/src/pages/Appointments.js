@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import Layout from '../components/Layout';
-import { Row, Col, Spin, Empty } from 'antd';
+import { Row, Col, Spin, Empty, Modal, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isTicketModalVisible, setIsTicketModalVisible] = useState(false);
+  const [selectedAppt, setSelectedAppt] = useState(null);
   const navigate = useNavigate();
+
+  const handleShowTicket = (appt) => {
+    setSelectedAppt(appt);
+    setIsTicketModalVisible(true);
+  };
 
   const getAppointments = async () => {
     try {
@@ -47,7 +55,7 @@ const Appointments = () => {
             {appointments.map((appt) => (
               <Col xs={24} md={12} xl={8} key={appt._id}>
                 <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden booking-card">
-                  {/* Status Ribbon */}
+                  {}
                   <div className={`py-2 px-3 text-white fw-bold ${
                     appt.status === 'pending' ? 'bg-warning text-dark' : 
                     appt.status === 'approved' ? 'bg-success' : 'bg-danger'
@@ -79,12 +87,20 @@ const Appointments = () => {
                       </div>
                     </div>
                     
-                    <button 
-                      className="btn w-100 btn-outline-primary rounded-pill fw-bold"
-                      onClick={() => navigate(`/book-appointment/${appt.doctorId}`)}
-                    >
-                      View Doctor Profile
-                    </button>
+                    <div className="d-flex gap-2">
+                      <button 
+                        className="btn w-50 btn-outline-primary rounded-pill fw-bold"
+                        onClick={() => navigate(`/book-appointment/${appt.doctorId}`)}
+                      >
+                        Doctor Profile
+                      </button>
+                      <button 
+                        className="btn w-50 btn-outline-dark rounded-pill fw-bold"
+                        onClick={() => handleShowTicket(appt)}
+                      >
+                        <i className="fa-solid fa-qrcode me-2"></i> Ticket
+                      </button>
+                    </div>
                   </div>
                 </div>
               </Col>
@@ -101,6 +117,37 @@ const Appointments = () => {
              <button className="btn btn-primary-custom px-5 rounded-pill mt-4" onClick={() => navigate('/')}>Book Your First Session</button>
           </div>
         )}
+
+        <Modal
+          title={<div className="text-center fs-4 fw-bold"><i className="fa-solid fa-ticket text-primary me-2"></i>Entry Ticket</div>}
+          open={isTicketModalVisible}
+          onCancel={() => setIsTicketModalVisible(false)}
+          footer={null}
+          centered
+        >
+          {selectedAppt && (
+            <div className="text-center p-4">
+              <h5 className="fw-bold mb-3">Scan at Reception</h5>
+              <div className="bg-light d-inline-block p-4 rounded-4 shadow-sm border mb-4">
+                <QRCodeCanvas 
+                  value={JSON.stringify({ 
+                    id: selectedAppt._id, 
+                    patient: selectedAppt.userInfo?.name, 
+                    doctor: selectedAppt.doctorInfo?.firstName 
+                  })} 
+                  size={200} 
+                  level={"H"} 
+                />
+              </div>
+              
+              <div className="text-start bg-light p-3 rounded text-muted small">
+                <p className="mb-1"><strong>Ticket ID:</strong> {selectedAppt._id}</p>
+                <p className="mb-1"><strong>Patient:</strong> {selectedAppt.userInfo?.name}</p>
+                <p className="mb-1"><strong>Payment:</strong> <Tag color={selectedAppt.paymentStatus === 'paid' ? 'success' : 'warning'}>{selectedAppt.paymentStatus?.toUpperCase() || 'UNKNOWN'}</Tag></p>
+              </div>
+            </div>
+          )}
+        </Modal>
       </div>
     </Layout>
   );

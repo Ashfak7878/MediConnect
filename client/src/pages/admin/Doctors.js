@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import axios from "axios";
-import { message, Table, Tag, Form, Modal, Input, Select, Row, Col, Button } from "antd";
+import { message, Table, Tag, Form, Modal, Input, Select, Row, Col, Button, TimePicker } from "antd";
+import moment from "moment";
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState(null);
   const [form] = Form.useForm();
-
-  // Fetch all doctors from your backend route
-  const getDoctors = async () => {
+  const [addForm] = Form.useForm();  const getDoctors = async () => {
     try {
       const res = await axios.get("/api/v1/admin/getAllDoctors", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -21,10 +21,7 @@ const Doctors = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  // Handle Approve / Reject
-  const handleAccountStatus = async (record, status) => {
+  };  const handleAccountStatus = async (record, status) => {
     try {
       const res = await axios.post(
         "/api/v1/admin/changeAccountStatus",
@@ -38,10 +35,7 @@ const Doctors = () => {
     } catch (error) {
       message.error("Something Went Wrong");
     }
-  };
-
-  // Handle Toggle Absent Status
-  const handleToggleAbsent = async (record) => {
+  };  const handleToggleAbsent = async (record) => {
     try {
       const res = await axios.post(
         "/api/v1/admin/toggleAbsentStatus",
@@ -87,6 +81,31 @@ const Doctors = () => {
       }
     } catch (error) {
       message.error("Failed to update profile");
+    }
+  };
+
+  const handleAddSubmit = async (values) => {
+    try {
+      const formattedValues = {
+        ...values,
+        timings: [
+          moment(values.timings[0]).format("HH:mm"),
+          moment(values.timings[1]).format("HH:mm"),
+        ],
+      };
+      const res = await axios.post("/api/v1/admin/createDoctor", formattedValues, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      if (res.data.success) {
+        message.success(res.data.message);
+        setIsAddModalVisible(false);
+        addForm.resetFields();
+        getDoctors();
+      } else {
+        message.error(res.data.message);
+      }
+    } catch (error) {
+      message.error("Failed to create doctor");
     }
   };
 
@@ -179,15 +198,24 @@ const Doctors = () => {
   return (
     <Layout>
       <div className="glass-card mx-auto bg-white p-4 rounded shadow-sm" style={{ maxWidth: "1100px" }}>
-        <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-          <div>
-            <h2 className="fw-bold text-dark m-0">
-              <i className="fa-solid fa-user-doctor me-2 text-primary"></i>
-              Manage Doctors
-            </h2>
-            <p className="text-muted m-0 mt-1">
-              Review applications and manage the availability of medical professionals.
-            </p>
+        {}
+        <div className="rounded-4 mb-4 shadow-sm text-white p-4" style={{
+          background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.7) 0%, rgba(59, 130, 246, 0.8) 100%), url("/dashboard_banner.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h2 className="fw-bold text-white m-0" style={{ textShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
+                <i className="fa-solid fa-user-doctor me-2"></i> Manage Doctors
+              </h2>
+              <p className="opacity-100 m-0 mt-1 fs-6" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+                Review applications and manage the availability of medical professionals.
+              </p>
+            </div>
+            <Button type="default" size="large" onClick={() => setIsAddModalVisible(true)} className="fw-bold shadow-sm rounded-pill" style={{ color: '#1890ff', border: 'none' }}>
+              <i className="fa-solid fa-plus me-2"></i> Add New Doctor
+            </Button>
           </div>
         </div>
         <Table 
@@ -198,7 +226,7 @@ const Doctors = () => {
           className="border rounded-3 overflow-hidden"
         />
 
-        {/* EDIT MODAL */}
+        {}
         <Modal 
           title="Edit Doctor Profile" 
           open={isModalVisible} 
@@ -255,6 +283,93 @@ const Doctors = () => {
             <div className="text-end mt-3">
               <Button onClick={() => setIsModalVisible(false)} className="me-2">Cancel</Button>
               <Button type="primary" htmlType="submit">Save Changes</Button>
+            </div>
+          </Form>
+        </Modal>
+
+        {}
+        <Modal 
+          title="Add New Doctor" 
+          open={isAddModalVisible} 
+          onCancel={() => setIsAddModalVisible(false)} 
+          footer={null}
+          width={800}
+        >
+          <Form layout="vertical" form={addForm} onFinish={handleAddSubmit}>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item label="First Name" name="firstName" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Last Name" name="lastName" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>
+                  <Input type="email" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Password" name="password" rules={[{ required: true }]}>
+                  <Input.Password />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Phone Number" name="phone" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Address" name="address" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Website (Optional)" name="website">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Consultation Fee (₹)" name="feesPerConsultation" rules={[{ required: true }]}>
+                  <Input type="number" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Specialization" name="specialization" rules={[{ required: true }]}>
+                  <Select showSearch>
+                    <Select.Option value="Cardiology">Cardiology</Select.Option>
+                    <Select.Option value="Dentist">Dentist</Select.Option>
+                    <Select.Option value="Dermatology">Dermatology</Select.Option>
+                    <Select.Option value="ENT">ENT (Ear, Nose, Throat)</Select.Option>
+                    <Select.Option value="General Physician">General Physician</Select.Option>
+                    <Select.Option value="Gynecology">Gynecology</Select.Option>
+                    <Select.Option value="Neurology">Neurology</Select.Option>
+                    <Select.Option value="Oncology">Oncology</Select.Option>
+                    <Select.Option value="Ophthalmology">Ophthalmology</Select.Option>
+                    <Select.Option value="Orthopedics">Orthopedics</Select.Option>
+                    <Select.Option value="Pediatrics">Pediatrics</Select.Option>
+                    <Select.Option value="Psychiatry">Psychiatry</Select.Option>
+                    <Select.Option value="Urology">Urology</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Experience (Years)" name="experience" rules={[{ required: true }]}>
+                  <Input type="number" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Timings" name="timings" rules={[{ required: true }]}>
+                  <TimePicker.RangePicker format="HH:mm" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <div className="text-end mt-3">
+              <Button onClick={() => setIsAddModalVisible(false)} className="me-2">Cancel</Button>
+              <Button type="primary" htmlType="submit">Create Doctor</Button>
             </div>
           </Form>
         </Modal>

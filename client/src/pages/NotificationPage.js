@@ -8,14 +8,7 @@ import axios from "axios";
 
 const NotificationPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  // Pull the current user's data from Redux
-  const { user } = useSelector((state) => state.user);
-
-  // ==========================================
-  // MOVE NOTIFICATIONS TO 'READ'
-  // ==========================================
-  const handleMarkAllRead = async () => {
+  const navigate = useNavigate();  const { user } = useSelector((state) => state.user);  const handleMarkAllRead = async () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
@@ -37,12 +30,7 @@ const NotificationPage = () => {
       console.log(error);
       message.error("Something went wrong marking notifications as read");
     }
-  };
-
-  // ==========================================
-  // DELETE ALL 'READ' NOTIFICATIONS
-  // ==========================================
-  const handleDeleteAllRead = async () => {
+  };  const handleDeleteAllRead = async () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
@@ -64,12 +52,7 @@ const NotificationPage = () => {
       console.log(error);
       message.error("Something went wrong deleting notifications");
     }
-  };
-
-  // ==========================================
-  // NEW ANT DESIGN TABS STRUCTURE
-  // ==========================================
-  const tabItems = [
+  };  const tabItems = [
     {
       key: "0",
       label: "Unread",
@@ -137,7 +120,7 @@ const NotificationPage = () => {
           <i className="fa-regular fa-bell me-2 text-primary"></i>Notification Center
         </h2>
         
-        {/* Render the tabs using the new 'items' prop! */}
+        {}
         <Tabs defaultActiveKey="0" items={tabItems} />
       
       </div>

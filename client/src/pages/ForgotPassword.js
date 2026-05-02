@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import "../styles/AuthStyles.css";
 
-const Login = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showOtp, setShowOtp] = useState(false);
@@ -14,9 +14,9 @@ const Login = () => {
 
   const handleResend = async () => {
     try {
-      const res = await axios.post("/api/v1/user/resend-otp", { email: userEmail });
+      const res = await axios.post("/api/v1/user/forgot-password", { email: userEmail });
       if (res.data.success) {
-        message.success(res.data.message);
+        message.success("OTP reset code resent.");
       } else {
         message.error(res.data.message);
       }
@@ -30,34 +30,29 @@ const Login = () => {
     try {
       if (showOtp) {
         dispatch(showLoading());
-        const endpoint = "/api/v1/user/verify-otp";
-        
-        const res = await axios.post(endpoint, {
+        const res = await axios.post("/api/v1/user/reset-password", {
           email: userEmail,
           otp: values.otp,
+          newPassword: values.newPassword,
         });
         dispatch(hideLoading());
         
         if (res.data.success) {
-          message.success("Account Verified! You can now log in.");
-          setShowOtp(false);
+          message.success(res.data.message);
+          navigate("/login");
         } else {
           message.error(res.data.message);
         }
       } else {
-        // Handle initial login
+        // Step 1: Request OTP
         dispatch(showLoading());
-        const res = await axios.post("/api/v1/user/login", values);
+        const res = await axios.post("/api/v1/user/forgot-password", values);
         dispatch(hideLoading());
         
-        if (!res.data.success && res.data.unverified) {
+        if (res.data.success) {
           setUserEmail(values.email);
           setShowOtp(true);
-          message.warning(res.data.message);
-        } else if (res.data.success) {
-          localStorage.setItem("token", res.data.token);
-          message.success("Login Successfully");
-          navigate("/");
+          message.success(res.data.message);
         } else {
           message.error(res.data.message);
         }
@@ -73,12 +68,12 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-form-wrapper">
         <div className="auth-header-icon">
-          <i className="fa-solid fa-heart-pulse"></i>
+          <i className="fa-solid fa-key"></i>
         </div>
         <Form layout="vertical" onFinish={onfinishHandler}>
-          <h3 className="auth-title">Medi-Connect {showOtp && "- Verify Account"}</h3>
+          <h3 className="auth-title">Medi-Connect - Reset Password</h3>
           <p className="auth-subtitle">
-            {showOtp ? "Please enter the OTP sent to your email." : "Please enter your details to sign in."}
+            {showOtp ? "Enter the OTP sent to your email and a new password." : "Enter your email to receive an OTP code."}
           </p>
           
           {!showOtp ? (
@@ -86,24 +81,25 @@ const Login = () => {
               <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
                 <Input type="email" placeholder="Enter your email" size="large" />
               </Form.Item>
-              <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-                <Input.Password placeholder="Enter your password" size="large" />
-              </Form.Item>
             </>
           ) : (
-            <Form.Item label="OTP Code" name="otp" rules={[{ required: true, message: 'Please input your OTP!' }]}>
-              <Input placeholder="Enter the 6-digit OTP" size="large" />
-            </Form.Item>
+            <>
+              <Form.Item label="OTP Code" name="otp" rules={[{ required: true, message: 'Please input your OTP!' }]}>
+                <Input placeholder="Enter the 6-digit OTP" size="large" />
+              </Form.Item>
+              <Form.Item label="New Password" name="newPassword" rules={[{ required: true, message: 'Please input a new password!' }]}>
+                <Input.Password placeholder="Enter new password" size="large" />
+              </Form.Item>
+            </>
           )}
           
           <button className="auth-btn" type="submit">
-            {showOtp ? "Verify OTP" : "Login"}
+            {showOtp ? "Reset Password" : "Send Request"}
           </button>
           
           {!showOtp && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
-               <Link to="/register" className="auth-link">Not a user? Register here</Link>
-               <Link to="/forgot-password" className="auth-link">Forgot Password?</Link>
+            <div style={{ marginTop: '15px', textAlign: 'center' }}>
+               <Link to="/login" className="auth-link">Back to Login</Link>
             </div>
           )}
           
@@ -121,7 +117,7 @@ const Login = () => {
                 style={{ cursor: "pointer" }} 
                 onClick={() => setShowOtp(false)}
               >
-                Back to Login
+                Cancel
               </div>
             </div>
           )}
@@ -131,4 +127,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

@@ -1,10 +1,52 @@
 const doctorModel = require("../models/doctorModel");
 const userModel = require("../models/userModel");
+const appointmentModel = require("../models/appointmentModel");
+const moment = require("moment");
+const bcrypt = require("bcryptjs");const createDoctorController = async (req, res) => {
+  try {
+    const { email, password, firstName, lastName, phone, website, address, specialization, experience, feesPerConsultation, timings } = req.body;
 
-// ==========================================
-// 1. GET ALL USERS
-// ==========================================
-const getAllUsersController = async (req, res) => {
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.status(200).send({ message: "User With This Email Already Exists", success: false });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new userModel({
+      name: `Dr. ${firstName} ${lastName}`,
+      email,
+      password: hashedPassword,
+      isAdmin: false,
+      isDoctor: true,
+      notification: [],
+      seennotification: []
+    });
+    const savedUser = await newUser.save();
+
+    const newDoctor = new doctorModel({
+      userId: savedUser._id.toString(),
+      firstName,
+      lastName,
+      email,
+      phone,
+      website: website || '',
+      address: address || '',
+      specialization,
+      experience,
+      feesPerConsultation,
+      timings,
+      status: "approved"
+    });
+    await newDoctor.save();
+
+    res.status(201).send({ success: true, message: "Doctor Created Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ success: false, message: "Failed To Create Doctor", error });
+  }
+};const getAllUsersController = async (req, res) => {
   try {
     const users = await userModel.find({});
     res.status(200).send({
@@ -20,12 +62,7 @@ const getAllUsersController = async (req, res) => {
       error,
     });
   }
-};
-
-// ==========================================
-// 2. GET ALL DOCTORS (For Admin Panel)
-// ==========================================
-const getAllDoctorsController = async (req, res) => {
+};const getAllDoctorsController = async (req, res) => {
   try {
     const doctors = await doctorModel.find({});
     res.status(200).send({
@@ -41,24 +78,13 @@ const getAllDoctorsController = async (req, res) => {
       error,
     });
   }
-};
-
-// ==========================================
-// 3. CHANGE DOCTOR ACCOUNT STATUS (Approve/Reject)
-// ==========================================
-const changeAccountStatusController = async (req, res) => {
+};const changeAccountStatusController = async (req, res) => {
   try {
-    const { doctorId, status } = req.body;
-    
-    // Update the doctor's status
-    const doctor = await doctorModel.findByIdAndUpdate(
+    const { doctorId, status } = req.body;    const doctor = await doctorModel.findByIdAndUpdate(
       doctorId, 
       { status }, 
       { new: true }
-    );
-
-    // Find the user who applied to be a doctor to send them a notification
-    const user = await userModel.findOne({ _id: doctor.userId });
+    );    const user = await userModel.findOne({ _id: doctor.userId });
     
     if (user) {
       const notification = user.notification || [];
@@ -66,10 +92,7 @@ const changeAccountStatusController = async (req, res) => {
         type: "doctor-account-request-updated",
         message: `Your Doctor Account Request has been ${status}`,
         onClickPath: "/notification",
-      });
-      
-      // If approved, give them doctor privileges
-      user.isDoctor = status === "approved" ? true : false;
+      });      user.isDoctor = status === "approved" ? true : false;
       user.notification = notification;
       await user.save();
     }
@@ -87,12 +110,7 @@ const changeAccountStatusController = async (req, res) => {
       error,
     });
   }
-};
-
-// ==========================================
-// 4. TOGGLE DOCTOR ABSENT STATUS
-// ==========================================
-const toggleAbsentStatusController = async (req, res) => {
+};const toggleAbsentStatusController = async (req, res) => {
   try {
     const { doctorId, isAbsent } = req.body;
     
@@ -115,12 +133,7 @@ const toggleAbsentStatusController = async (req, res) => {
       error,
     });
   }
-};
-
-// ==========================================
-// 5. BLOCK USER ACCOUNT
-// ==========================================
-const blockUserController = async (req, res) => {
+};const blockUserController = async (req, res) => {
   try {
     const { userId } = req.body;
     await userModel.findByIdAndDelete(userId); 
@@ -137,12 +150,7 @@ const blockUserController = async (req, res) => {
       error,
     });
   }
-};
-
-// ==========================================
-// 6. UPDATE DOCTOR PROFILE (Admin Edit)
-// ==========================================
-const updateDoctorProfileController = async (req, res) => {
+};const updateDoctorProfileController = async (req, res) => {
   try {
     const { doctorId, ...updateData } = req.body;
     
@@ -166,13 +174,43 @@ const updateDoctorProfileController = async (req, res) => {
     });
   }
 };
+const getAdminStatsController = async (req, res) => {
+  try {
+    const totalUsers = await userModel.countDocuments({ isAdmin: false });
+    const totalDoctors = await doctorModel.countDocuments({ status: "approved" });
+    
+    const allAppointments = await appointmentModel.find({});
+    const todayAppointments = allAppointments.filter(app => {
+      // The date is stored as an ISO string of the date (DD-MM-YYYY converted to ISO)
+      return moment(app.date).isSame(moment(), 'day');
+    });
 
-// Export all 6 functions together!
+    res.status(200).send({
+      success: true,
+      message: "Admin stats fetched successfully",
+      data: {
+        totalUsers,
+        totalDoctors,
+        todayAppointmentsCount: todayAppointments.length
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error fetching admin stats",
+      error
+    });
+  }
+};
+
 module.exports = {
+  createDoctorController,
   getAllDoctorsController,
   getAllUsersController,
   changeAccountStatusController,
   toggleAbsentStatusController,
   blockUserController,
-  updateDoctorProfileController
+  updateDoctorProfileController,
+  getAdminStatsController
 };

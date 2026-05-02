@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
   notification: {
     type: Array,
     default: [],
@@ -29,9 +33,15 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+  otp: {
+    type: String,
+    default: null,
+  },
+  otpExpiration: {
+    type: Date,
+    default: null,
+  },
 });
 
-// THIS IS LIKELY WHERE THE BUG IS
-// Make sure these exact two lines are at the very bottom of your file:
 const userModel = mongoose.model("users", userSchema);
 module.exports = userModel;
